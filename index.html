@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taquerías Zavala - Menú Digital</title>
+  <style>
+    :root {
+      /* PALETA DE COLORES */
+      --primary: #010951;
+      --primary-hover: #d68910;
+      --bg: #ffffff;
+      --header-bg: #010951;
+      --card-bg: #010951;
+      --text: #ffffff;
+      --text-sub: #a0a0a0;
+      --success: #25d366;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding-bottom: 120px;
+    }
+
+    header {
+      background: var(--header-bg);
+      padding: 20px 15px;
+      text-align: center;
+      border-bottom: 2px solid var(--primary);
+    }
+
+    header img {
+      max-height: 70px;
+      width: auto;
+      display: block;
+      margin: 0 auto 8px;
+      border-radius: 8px;
+    }
+
+    header h1 {
+      font-size: 1.5rem;
+      color: var(--text);
+    }
+
+    .slogan {
+      font-style: italic;
+      color: var(--primary);
+      font-size: 0.95rem;
+      margin: 4px 0 8px;
+      font-weight: 600;
+    }
+
+    .info-bar {
+      font-size: 0.85rem;
+      color: var(--text-sub);
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .map-link {
+      color: #3498db;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .map-link:hover {
+      text-decoration: underline;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-open {
+      background: rgba(37, 211, 102, 0.2);
+      color: var(--success);
+      border: 1px solid var(--success);
+    }
+
+    .status-closed {
+      background: rgba(255, 77, 77, 0.2);
+      color: #ff4d4d;
+      border: 1px solid #ff4d4d;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 15px;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      margin: 25px 0 12px;
+      color: var(--primary);
+      border-bottom: 1px solid #1e293b;
+      padding-bottom: 6px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .menu-grid {
+      display: grid;
+      gap: 15px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      border: 1px solid #1e293b;
+    }
+
+    .card-img {
+      width: 85px;
+      height: 85px;
+      object-fit: cover;
+      border-radius: 10px;
+      background: #1e293b;
+      flex-shrink: 0;
+    }
+
+    .card-info {
+      flex-grow: 1;
+    }
+
+    .card-info h3 {
+      font-size: 1.05rem;
+      margin-bottom: 4px;
+    }
+
+    .card-info p {
+      font-size: 0.8rem;
+      color: var(--text-sub);
+      margin-bottom: 6px;
+      line-height: 1.2;
+    }
+
+    .card-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+    }
+
+    .price {
+      font-weight: bold;
+      color: var(--success);
+      font-size: 0.95rem;
+    }
+
+    .btn-add {
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-add:hover {
+      background: var(--primary-hover);
+      color: #fff;
+    }
+
+    .cart-float-btn {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: var(--success);
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 30px;
+      font-weight: bold;
+      font-size: 0.95rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      z-index: 90;
+    }
+
+    .cart-badge {
+      background: white;
+      color: #000;
+      border-radius: 50%;
+      padding: 2px 8px;
+      font-size: 0.85rem;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.85);
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 100;
+    }
+
+    .modal-content {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 420px;
+      max-height: 90vh;
+      overflow-y: auto;
+      border: 1px solid #1e293b;
+    }
+
+    .modal-img-preview {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 10px;
+      margin-bottom: 12px;
+    }
+
+    .modal-content h2 {
+      margin-bottom: 6px;
+      color: var(--primary);
+      font-size: 1.3rem;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+      color: var(--text-sub);
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #333;
+      background: #060911;
+      color: white;
+      font-size: 0.95rem;
+    }
+
+    .qty-picker {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin: 10px 0;
+    }
+
+    .btn-qty {
+      background: #1e293b;
+      color: white;
+      border: 1px solid #333;
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #060911;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+
+    .cart-item-details {
+      flex-grow: 1;
+    }
+
+    .cart-item-title {
+      font-size: 0.95rem;
+      font-weight: bold;
+    }
+
+    .cart-item-sub {
+      font-size: 0.78rem;
+      color: var(--text-sub);
+    }
+
+    .btn-delete {
+      background: transparent;
+      border: none;
+      color: #ff4d4d;
+      font-size: 1.2rem;
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+
+    .bank-info-box {
+      display: none;
+      background: #060911;
+      border: 1px dashed var(--success);
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 14px;
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+
+    .bank-info-box strong {
+      color: var(--success);
+    }
+
+    .btn-action {
+      width: 100%;
+      background: var(--success);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .btn-close {
+      width: 100%;
+      background: #1e293b;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ENCABEZADO -->
+  <header>
+    <img src="logo.jpg" alt="Taquerías Zavala" onerror="this.style.display='none'">
+    <h1>TAQUERÍAS ZAVALA</h1>
+    <p class="slogan">"Un taco al día es la llave de la alegría"</p>
+    
+    <div class="info-bar">
+      <a href="https://maps.google.com/?q=Calle+San+Mart%C3%ADn+503" target="_blank" class="map-link">
+        📍 Calle San Martín #503 
+      </a>
+      <div id="store-status" class="status-badge">Verificando...</div>
+    </div>
+  </header>
+
+  <!-- CONTENIDO DEL MENÚ -->
+  <div class="container">
+    
+    <!-- SECCIÓN: TACOS -->
+    <div class="section-title">Tacos ($14 c/u)</div>
+    <div class="menu-grid">
+      <div class="card">
+        <img src="taco.jpg" alt="Tacos" class="card-img" onerror="this.style.display='none'">
+        <div class="card-info">
+          <h3>Tacos Surtidos</h3>
+          <p>Pastor, bistec, longaniza, suadero, cueritos o campechano.</p>
+          <div class="card-bottom">
+            <span class="price">$14 MXN</span>
+            <button class="btn-add" onclick="abrirModalOpciones('Taco', 14, ['Pastor', 'Bistec', 'Longaniza', 'Suadero', 'Cueritos', 'Campechano'], 'taco.jpg')">+ Agregar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECCIÓN: PARRILLADAS -->
+    <div class="section-title">Parrilladas</div>
+    <div class="menu-grid">
+      
+      <div class="card">
+        <img src="parrillada.jpg" alt="Fortachón" class="card-img" onerror="this.style.display='none'">
+        <div class="card-info">
+          <h3>Fortachón</h3>
+          <p>Especialidad de la casa para compartir.</p>
+          <div class="card-bottom">
+            <span class="price">$160 MXN</span>
+            <button class="btn-add" onclick="abrirModalOpciones('Fortachón', 160, [], 'parrillada.jpg')">+ Agregar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="parrillada.jpg" alt="Alambre de Bistec" class="card-img" onerror="this.style.display='none'">
+        <div class="card-info">
+          <h3>Alambre de Bistec</h3>
+          <p>Con queso fundido, cebolla y pimiento morrón.</p>
+          <div class="card-bottom">
+            <span class="price">$170 MXN</span>
+            <button class="btn-add" onclick="abrirModalOpciones('Alambre de Bistec', 170, [], 'parrillada.jpg')">+ Agregar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="parrillada.jpg" alt="Alambre de Pastor" class="card-img" onerror="this.style.display='none'">
+        <div class="card-info">
+          <h3>Alambre de Pastor</h3>
+          <p>Carne al pastor con piña, queso y pimiento morrón.</p>
+          <div class="card-bottom">
+            <span class="price">$160 MXN</span>
+            <button class="btn-add" onclick="abrirModalOpciones('Alambre de Pastor', 160, [], 'parrillada.jpg')">+ Agregar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="parrillada.jpg" alt="Alambre Combinado" class="card-img" onerror="this.style.display='none'">
+        <div class="card-info">
+          <h3>Alambre Combinado</h3>
+          <p>Mezcla especial de carnes con queso fundido y pimiento morrón.</p>
+          <div class="card-bottom">
+            <span class="price">$170 MXN</span>
+            <button class="btn-add" onclick="abrirModalOpciones('Alambre Combinado', 170, [], 'parrillada.jpg')">+ Agregar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="parrillada.jpg" alt="1kg de Pastor" class="card-img" onerror="this.style.display='none'">
+        <div class="card-info">
+          <h3>1kg de Pastor</h3>
+          <p>Incluye orden de piña, cilantro, cebolla y tortillas.</p>
+          <div class="card-bottom">
+            <span class="price">$400 MXN</span>
+            <button class="btn-add" onclick="abrirModalOpciones('1kg de Pastor', 400, [], 'parrillada.jpg')">+ Agregar</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SECCIÓN: OTROS -->
+    <div class="section-title">Otros</div>
+    <div class="menu-grid">
+      
+      <div class="card">
+        <img src="hamburguesa.jpg" alt="Hamburguesa" class="card-img" onerror="this.style.display='none'">
+        <div class="card-info">
+          <h3>Hamburguesa</h3>
+          <p>Deliciosa carne de tu eleccion con un toque único.</p>
+          <div class="card-bottom">
+            <span class="price">$60 MXN</span>
+            <button class="btn-add" onclick="abrirModalOpciones('Hamburguesa', 60, ['Pastor', 'Bistec', 'Longaniza', 'Campechano'], 'hamburguesa.jpg')">+ Agregar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="gringa.jpg" alt="Sincronizada" class="card-img" onerror="this.style.display='none'">
+        <div class="card-info">
+          <h3>Sincronizada</h3>
+          <p>Tortillas de harina con jamón y queso fundido.</p>
+          <div class="card-bottom">
+            <span class="price">$30 MXN</span>
+            <button class="btn-add" onclick="abrirModalOpciones('Sincronizada', 30, [], 'gringa.jpg')">+ Agregar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="gringa.jpg" alt="Gringa" class="card-img" onerror="this.style.display='none'">
+        <div class="card-info">
+          <h3>Gringa (Pastor / Bistec / etc.)</h3>
+          <p>Queso fundido y carne a elegir en tortilla de harina.</p>
+          <div class="card-bottom">
+            <span class="price">$50 MXN</span>
+            <button class="btn-add" onclick="abrirModalOpciones('Gringa', 50, ['Pastor', 'Bistec', 'Longaniza', 'Campechano'], 'gringa.jpg')">+ Agregar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="gringa.jpg" alt="Gringa de Suadero" class="card-img" onerror="this.style.display='none'">
+        <div class="card-info">
+          <h3>Gringa de Suadero</h3>
+          <p>Exquisita gringa preparada con suadero especial.</p>
+          <div class="card-bottom">
+            <span class="price">$55 MXN</span>
+            <button class="btn-add" onclick="abrirModalOpciones('Gringa de Suadero', 55, [], 'gringa.jpg')">+ Agregar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="burrito.jpg" alt="Burrito" class="card-img" onerror="this.style.display='none'">
+        <div class="card-info">
+          <h3>Burrito Bistec | Pastor</h3>
+          <p>Envuelto grande con frijoles, queso y carne.</p>
+          <div class="card-bottom">
+            <span class="price">$60 MXN</span>
+            <button class="btn-add" onclick="abrirModalOpciones('Burrito', 60, ['Bistec', 'Pastor'], 'burrito.jpg')">+ Agregar</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SECCIÓN: BEBIDAS -->
+    <div class="section-title">Bebidas</div>
+    <div class="menu-grid">
+      
+      <div class="card">
+        <img src="refresco.jpg" alt="Refrescos" class="card-img" onerror="this.style.display='none'">
+        <div class="card-info">
+          <h3>Refrescos 600ml</h3>
+          <p>Elige tu sabor o marca preferida.</p>
+          <div class="card-bottom">
+            <span class="price">$25 MXN</span>
+            <button class="btn-add" onclick="abrirModalOpciones('Refresco 600ml', 25, ['Coca-Cola', 'Coca-Cola Zero', 'Jarritos Mandarina', 'Jarritos Fruta', 'Sidral Mundet', 'Fanta', 'Sprite'], 'refresco.jpg')">+ Agregar</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- BOTÓN FLOTANTE DEL CARRITO -->
+  <button class="cart-float-btn" onclick="abrirModalCarrito()">
+    🛒 <span class="cart-badge" id="cart-count">0</span>
+    <span id="cart-total-badge">$0</span>
+  </button>
+
+  <!-- MODAL DE CONFIGURACIÓN DE PRODUCTO -->
+  <div class="modal" id="modalOpciones">
+    <div class="modal-content">
+      <img id="modal-item-img" src="" alt="Producto" class="modal-img-preview" onerror="this.style.display='none'">
+      <h2 id="modal-item-title">Configurar Producto</h2>
+      <p id="modal-item-price" style="color: var(--success); font-weight: bold; margin-bottom: 10px;"></p>
+      
+      <div class="form-group">
+        <label>Cantidad:</label>
+        <div class="qty-picker">
+          <button class="btn-qty" onclick="cambiarCantidadModal(-1)">-</button>
+          <span id="modal-item-qty" style="font-size: 1.3rem; font-weight: bold;">1</span>
+          <button class="btn-qty" onclick="cambiarCantidadModal(1)">+</button>
+        </div>
+      </div>
+
+      <div class="form-group" id="group-sabores">
+        <label>Sabor / Variante:</label>
+        <select id="modal-item-sabor"></select>
+      </div>
+
+      <div class="form-group">
+        <label>Notas especiales (opcional):</label>
+        <input type="text" id="modal-item-notas" placeholder="Ej. Sin cebolla, bien tostada, etc.">
+      </div>
+
+      <button class="btn-action" onclick="confirmarAgregarAlCarrito()">Agregar al Carrito 🛒</button>
+      <button class="btn-close" onclick="cerrarModal('modalOpciones')">Cancelar</button>
+    </div>
+  </div>
+
+  <!-- MODAL DEL CARRITO Y CHECKOUT -->
+  <div class="modal" id="modalCarrito">
+    <div class="modal-content">
+      <h2>Tu Pedido</h2>
+      
+      <div id="cart-items-container"></div>
+
+      <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold; margin: 15px 0;">
+        <span>Total:</span>
+        <span id="cart-total-modal" style="color: var(--success);">$0 MXN</span>
+      </div>
+
+      <div class="form-group">
+        <label>Tu Nombre:</label>
+        <input type="text" id="cliente-nombre" placeholder="Ej. Juan Pérez">
+      </div>
+
+      <div class="form-group">
+        <label>Tipo de Entrega:</label>
+        <select id="cliente-entrega">
+          <option value="Para Recoger">Para Recoger en sucursal</option>
+          <option value="A Domicilio">A Domicilio</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Dirección / Mesa:</label>
+        <input type="text" id="cliente-direccion" placeholder="Ej. Av. Juárez #45 o Mesa 2">
+      </div>
+
+      <div class="form-group">
+        <label>Método de Pago:</label>
+        <select id="cliente-pago" onchange="cambiarMetodoPago()">
+          <option value="Efectivo">Efectivo 💵</option>
+          <option value="Transferencia">Transferencia Bancaria 📱</option>
+        </select>
+      </div>
+
+      <!-- DATOS BANCARIOS -->
+      <div class="bank-info-box" id="bankInfoBox">
+        <strong>📋 Datos para transferencia:</strong><br>
+        Banco: <strong>Banco Azteca</strong><br>
+        CLABE: <strong>4198220345419863</strong><br>
+        Titular: <strong>Abraham Zavala</strong><br>
+        <span style="color: #ff4d4d; font-size: 0.78rem;">*Favor de enviar captura del comprobante por WhatsApp.</span>
+      </div>
+
+      <button class="btn-action" onclick="enviarWhatsApp()">Enviar por WhatsApp 📲</button>
+      <button class="btn-close" onclick="cerrarModal('modalCarrito')">Seguir pidiendo</button>
+    </div>
+  </div>
+
+  <script>
+    // NÚMERO DE WHATSAPP DEL NEGOCIO
+    const TELEFONO_WHATSAPP = "527715035028"; 
+
+    // CONFIGURACIÓN DE HORARIOS (Jueves a Domingo de 6 PM a 11 PM)
+    const HORARIO = {
+      diasAbiertos: [4, 5, 6, 0], // Jueves (4), Viernes (5), Sábado (6) y Domingo (0)
+      horaApertura: 18,          // 18:00 hrs (6:00 PM)
+      horaCierre: 23             // 23:00 hrs (11:00 PM)
+    };
+
+    // EVALUA SI EL LOCAL ESTÁ ABIERTO O CERRADO
+    function verificarEstadoLocal() {
+      const ahora = new Date();
+      const diaActual = ahora.getDay();
+      const horaActual = ahora.getHours();
+      const badge = document.getElementById('store-status');
+      if (!badge) return;
+
+      const esDiaAbierto = HORARIO.diasAbiertos.includes(diaActual);
+      const esHoraAbierta = horaActual >= HORARIO.horaApertura && horaActual < HORARIO.horaCierre;
+
+      if (esDiaAbierto && esHoraAbierta) {
+        badge.innerText = "🟢 Abierto Ahora";
+        badge.className = "status-badge status-open";
+      } else {
+        badge.innerText = "🔴 Cerrado Por Ahora";
+        badge.className = "status-badge status-closed";
+      }
+    }
+
+    verificarEstadoLocal();
+
+    let carrito = [];
+    let productoTemp = null;
+    let cantidadTemp = 1;
+
+    function abrirModalOpciones(nombre, precio, opciones, imagenRuta) {
+      productoTemp = { nombre, precio, opciones, imagenRuta };
+      cantidadTemp = 1;
+      
+      document.getElementById('modal-item-title').innerText = nombre;
+      document.getElementById('modal-item-price').innerText = `$${precio} MXN c/u`;
+      document.getElementById('modal-item-qty').innerText = cantidadTemp;
+      document.getElementById('modal-item-notas').value = '';
+
+      let imgElement = document.getElementById('modal-item-img');
+      if (imagenRuta) {
+        imgElement.src = imagenRuta;
+        imgElement.style.display = 'block';
+      } else {
+        imgElement.style.display = 'none';
+      }
+
+      let selectSabor = document.getElementById('modal-item-sabor');
+      selectSabor.innerHTML = '';
+      
+      if (opciones && opciones.length > 0) {
+        document.getElementById('group-sabores').style.display = 'block';
+        opciones.forEach(op => {
+          let optElement = document.createElement('option');
+          optElement.value = op;
+          optElement.innerText = op;
+          selectSabor.appendChild(optElement);
+        });
+      } else {
+        document.getElementById('group-sabores').style.display = 'none';
+      }
+
+      document.getElementById('modalOpciones').style.display = 'flex';
+    }
+
+    function cambiarCantidadModal(delta) {
+      if (cantidadTemp + delta >= 1) {
+        cantidadTemp += delta;
+        document.getElementById('modal-item-qty').innerText = cantidadTemp;
+      }
+    }
+
+    function confirmarAgregarAlCarrito() {
+      let saborElegido = (productoTemp.opciones && productoTemp.opciones.length > 0) ? document.getElementById('modal-item-sabor').value : '';
+      let notas = document.getElementById('modal-item-notas').value;
+
+      carrito.push({
+        id: Date.now(),
+        nombre: productoTemp.nombre,
+        precio: productoTemp.precio,
+        cantidad: cantidadTemp,
+        sabor: saborElegido,
+        notas: notas
+      });
+
+      cerrarModal('modalOpciones');
+      actualizarUI();
+    }
+
+    function eliminarDelCarrito(id) {
+      carrito = carrito.filter(item => item.id !== id);
+      actualizarUI();
+      renderizarItemsCarrito();
+    }
+
+    function actualizarUI() {
+      let total = 0;
+      let cantidadItems = 0;
+
+      carrito.forEach(item => {
+        total += item.precio * item.cantidad;
+        cantidadItems += item.cantidad;
+      });
+
+      document.getElementById('cart-count').innerText = cantidadItems;
+      document.getElementById('cart-total-badge').innerText = `$${total}`;
+      document.getElementById('cart-total-modal').innerText = `$${total} MXN`;
+    }
+
+    function renderizarItemsCarrito() {
+      let container = document.getElementById('cart-items-container');
+      container.innerHTML = '';
+
+      if (carrito.length === 0) {
+        container.innerHTML = '<p style="text-align: center; color: var(--text-sub); padding: 15px;">Tu carrito está vacío.</p>';
+        return;
+      }
+
+      carrito.forEach(item => {
+        let subtotal = item.precio * item.cantidad;
+        let itemDiv = document.createElement('div');
+        itemDiv.className = 'cart-item';
+        itemDiv.innerHTML = `
+          <div class="cart-item-details">
+            <div class="cart-item-title">${item.cantidad}x ${item.nombre}</div>
+            <div class="cart-item-sub">
+              ${item.sabor ? 'Sabor: ' + item.sabor : ''} 
+              ${item.notas ? ' | Notas: ' + item.notas : ''}
+              <br><strong style="color: var(--success);">$${subtotal} MXN</strong>
+            </div>
+          </div>
+          <button class="btn-delete" onclick="eliminarDelCarrito(${item.id})">🗑️</button>
+        `;
+        container.appendChild(itemDiv);
+      });
+    }
+
+    function cambiarMetodoPago() {
+      let metodo = document.getElementById('cliente-pago').value;
+      let cajaBanco = document.getElementById('bankInfoBox');
+      
+      if (metodo === 'Transferencia') {
+        cajaBanco.style.display = 'block';
+      } else {
+        cajaBanco.style.display = 'none';
+      }
+    }
+
+    function abrirModalCarrito() {
+      renderizarItemsCarrito();
+      document.getElementById('modalCarrito').style.display = 'flex';
+    }
+
+    function cerrarModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    function enviarWhatsApp() {
+      if (carrito.length === 0) {
+        alert("Agrega productos antes de enviar el pedido.");
+        return;
+      }
+
+      let nombre = document.getElementById('cliente-nombre').value;
+      let entrega = document.getElementById('cliente-entrega').value;
+      let direccion = document.getElementById('cliente-direccion').value;
+      let metodoPago = document.getElementById('cliente-pago').value;
+
+      if (!nombre) {
+        alert("Por favor ingresa tu nombre.");
+        return;
+      }
+
+      let mensaje = `*¡NUEVO PEDIDO DESDE LA WEB!* 🌮\n\n`;
+      mensaje += `👤 *Cliente:* ${nombre}\n`;
+      mensaje += `🛵 *Tipo:* ${entrega}\n`;
+      mensaje += `📍 *Ubicación:* ${direccion || 'No especificada'}\n`;
+      mensaje += `💳 *Método de Pago:* ${metodoPago}\n\n`;
+      mensaje += `🛒 *DETALLE DE LA ORDEN:*\n`;
+
+      let total = 0;
+      carrito.forEach(item => {
+        let subtotal = item.precio * item.cantidad;
+        total += subtotal;
+        mensaje += `• *${item.cantidad}x ${item.nombre}*`;
+        if (item.sabor) mensaje += ` (${item.sabor})`;
+        mensaje += ` - $${subtotal} MXN\n`;
+        if (item.notas) mensaje += `   _Nota: ${item.notas}_\n`;
+      });
+
+      mensaje += `\n💰 *TOTAL A PAGAR: $${total} MXN*`;
+
+      let url = `https://wa.me/${TELEFONO_WHATSAPP}?text=${encodeURIComponent(mensaje)}`;
+      window.open(url, '_blank');
+    }
+  </script>
+</body>
+</html>
